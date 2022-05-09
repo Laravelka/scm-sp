@@ -3,6 +3,7 @@
 	"CM_Delay"
 	{
 		"#format"	"{1:i}"
+
 		"ru"		"{rare}[SCM] {red}Сообщение можно оправлять раз в {i} сек."
 		"en"		"{rare}[SCM] {red}The message can be sent once in {i} sec."
 	}
@@ -28,6 +29,7 @@
 	"CM_MsgNotSent"
 	{
 		"#format"	"{1:t}"
+
 		"ru"		"{rare}[SCM] {red}{1}"
 		"en"		"{rare}[SCM] {red}{1}"
 	}
@@ -35,6 +37,7 @@
 	"CM_MsgWasSent"
 	{
 		"#format"	"{1:t}"
+
 		"ru"		"{rare}[SCM] {green}{1}"
 		"en"		"{rare}[SCM] {green}{1}"
 	}
@@ -42,6 +45,7 @@
 	"CM_SayFrom_Telegram"
 	{
 		"#format"	"{1:s},{2:s}"
+
 		"ru"		"{rare}[SCM]{dodgerblue}[Телеграм] {white}{1}: {lightgray}{2}"
 		"en"		"{rare}[SCM]{dodgerblue}[Telegram] {white}{1}: {lightgray}{2}"
 	}
@@ -49,6 +53,7 @@
 	"CM_SayFrom_Discord"
 	{
 		"#format"	"{1:s},{2:s}"
+
 		"ru"		"{rare}[SCM]{slateblue}[Дискорд] {white}{1}: {lightgray}{2}"
 		"en"		"{rare}[SCM]{slateblue}[Discord] {white}{1}: {lightgray}{2}"
 	}
@@ -56,6 +61,7 @@
 	"CM_SayFrom_Vk"
 	{
 		"#format"	"{1:s},{2:s}"
+		
 		"ru"		"{rare}[SCM]{steelblue}[ВК] {white}{1}: {lightgray}{2}"
 		"en"		"{rare}[SCM]{steelblue}[VK] {white}{1}: {lightgray}{2}"
 	}

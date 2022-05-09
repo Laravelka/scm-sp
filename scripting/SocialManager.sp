@@ -137,7 +137,7 @@ public void OnPluginStart()
 			menuChats = new Menu(onClickMenu);
 			menuChats.SetTitle("%t", "Other_MenuTitle");
 			chatsArray = new ArrayList(ByteCountToCells(128));
-
+			
 			do {
 				kv.GetSectionName(sSection, sizeof(sSection));
 				kv.GetString(NULL_STRING, sValueID, sizeof(sValueID));
@@ -315,10 +315,10 @@ stock void onVkMessageSend(HTTPResponse response, any value)
 		LogError("[Vk] Error: Invalid JSON response");
 
 		if (value == 0) {
-			ReplyToCommand(value, "[SCM][Vk] %t", "Messages.MsgWasSent");
+			ReplyToCommand(value, "[SCM][Vk] %t", "Other_MsgNotSent");
 		} else {
-			C_PrintToChat(value, "%t", "Old_MsgNotSent", MsgNotSent);
-			MC_PrintToChat(value, "%t", "CM_MsgNotSent", MsgNotSent);
+			C_PrintToChat(value, "%t", "Old_MsgNotSent", "Other_MsgNotSent");
+			MC_PrintToChat(value, "%t", "CM_MsgNotSent", "Other_MsgNotSent");
 		}
 		return;
 	}
@@ -327,10 +327,10 @@ stock void onVkMessageSend(HTTPResponse response, any value)
 		LogError("[Vk] Invalid status response");
 
 		if (value == 0) {
-			ReplyToCommand(value, "[SCM][Vk] %t", "Messages.MsgWasSent");
+			ReplyToCommand(value, "[SCM][Vk] %t", "Other_MsgNotSent");
 		} else {
-			C_PrintToChat(value, "%t", "Old_MsgNotSent", MsgNotSent);
-			MC_PrintToChat(value, "%t", "CM_MsgNotSent", MsgNotSent);
+			C_PrintToChat(value, "%t", "Old_MsgNotSent", "Other_MsgNotSent");
+			MC_PrintToChat(value, "%t", "CM_MsgNotSent", "Other_MsgNotSent");
 		}
 		return;
 	}
@@ -350,8 +350,8 @@ stock void onVkMessageSend(HTTPResponse response, any value)
 		if (value == 0) {
 			ReplyToCommand(value, "[SCM][Vk] Error: %s", errorMessage);
 		} else {
-			C_PrintToChat(value,  "%t", "Old_MsgNotSent", MsgNotSent);
-			MC_PrintToChat(value, "%t", "CM_MsgNotSent", MsgNotSent);
+			C_PrintToChat(value,  "%t", "Old_MsgNotSent", "Other_MsgNotSent");
+			MC_PrintToChat(value, "%t", "CM_MsgNotSent", "Other_MsgNotSent");
 		}
 		return;
 	}
@@ -360,8 +360,8 @@ stock void onVkMessageSend(HTTPResponse response, any value)
 		ReplyToCommand(value, "[SCM][VK] %s", MsgWasSent);
 	} else {
 		lastMessageTime[value] = GetTime();
-		C_PrintToChat(value, "%t", "Old_MsgWasSent", MsgWasSent);
-		MC_PrintToChat(value, "%t", "CM_MsgWasSent", MsgWasSent);
+		C_PrintToChat(value, "%t", "Old_MsgWasSent", "Other_MsgWasSent");
+		MC_PrintToChat(value, "%t", "CM_MsgWasSent", "Other_MsgWasSent");
 	}
 }
 
@@ -412,10 +412,10 @@ stock void onDsMessageSend(HTTPResponse response, any value)
 		}
 
 		if (value == 0) {
-			ReplyToCommand(value, "[SCM][Discord] %t", "Messages.MsgNotSent");
+			ReplyToCommand(value, "[SCM][Discord] %t", "Other_MsgNotSent");
 		} else {
-			C_PrintToChat(value,  "%t", "Old_MsgNotSent", MsgNotSent);
-			MC_PrintToChat(value, "%t", "CM_MsgNotSent", MsgNotSent);
+			C_PrintToChat(value,  "%t", "Old_MsgNotSent", "Other_MsgNotSent");
+			MC_PrintToChat(value, "%t", "CM_MsgNotSent", "Other_MsgNotSent");
 		}
 		return;
 	} else {
@@ -423,8 +423,8 @@ stock void onDsMessageSend(HTTPResponse response, any value)
 			ReplyToCommand(value, "[SCM][Discord] %s", MsgWasSent);
 		} else {
 			lastMessageTime[value] = GetTime();
-			C_PrintToChat(value,  "%t", "Old_MsgWasSent", MsgWasSent);
-			MC_PrintToChat(value, "%t", "CM_MsgWasSent", MsgWasSent);
+			C_PrintToChat(value,  "%t", "Old_MsgWasSent", "Other_MsgWasSent");
+			MC_PrintToChat(value, "%t", "CM_MsgWasSent", "Other_MsgWasSent");
 		}
 	}
 }
@@ -479,10 +479,10 @@ stock void onTgMessageSend(HTTPResponse response, any value)
 		}
 
 		if (value == 0) {
-			ReplyToCommand(value, "[SCM][Telegram] %t", "Messages.MsgNotSent");
+			ReplyToCommand(value, "[SCM][Telegram] %t", "Other_MsgNotSent");
 		} else {
-			C_PrintToChat(value,  "%t", "Old_MsgNotSent", MsgNotSent);
-			MC_PrintToChat(value, "%t", "CM_MsgNotSent", MsgNotSent);
+			C_PrintToChat(value,  "%t", "Old_MsgNotSent", "Other_MsgNotSent");
+			MC_PrintToChat(value, "%t", "CM_MsgNotSent", "Other_MsgNotSent");
 		}
 		return;
 	}
@@ -491,10 +491,10 @@ stock void onTgMessageSend(HTTPResponse response, any value)
 		LogError("[SCM][Telegram] Invalid JSON response");
 		
 		if (value == 0) {
-			ReplyToCommand(value, "[SCM][Telegram] %t", "Messages.MsgNotSent");
+			ReplyToCommand(value, "[SCM][Telegram] %t", "Other_MsgNotSent");
 		} else {
-			C_PrintToChat(value,  "%t", "Old_MsgNotSent", MsgNotSent);
-			MC_PrintToChat(value, "%t", "CM_MsgNotSent", MsgNotSent);
+			C_PrintToChat(value,  "%t", "Old_MsgNotSent", "Other_MsgNotSent");
+			MC_PrintToChat(value, "%t", "CM_MsgNotSent", "Other_MsgNotSent");
 		}
 		return;
 	}
@@ -503,7 +503,7 @@ stock void onTgMessageSend(HTTPResponse response, any value)
 		ReplyToCommand(value, "[SCM][Telegram] %s", MsgWasSent);
 	} else {
 		lastMessageTime[value] = GetTime();
-		C_PrintToChat(value,  "%t", "Old_MsgWasSent", MsgWasSent);
-		MC_PrintToChat(value, "%t", "CM_MsgWasSent", MsgWasSent);
+		C_PrintToChat(value,  "%t", "Old_MsgWasSent", "Other_MsgWasSent");
+		MC_PrintToChat(value, "%t", "CM_MsgWasSent", "Other_MsgWasSent");
 	}
 }
