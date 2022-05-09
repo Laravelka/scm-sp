@@ -33,7 +33,8 @@ public Plugin myinfo =
 Menu menuChats;
 ArrayList chatsArray;
 int messagesDelay = 5, chatsCount, isLogging, isPrintHostName, lastMessageTime[MAXPLAYERS+1] = 0;
-char vkToken[128], ServerIp[64], HostName[256], dsToken[128], tgToken[128], sSection[256], sValueID[256], sText[MAXPLAYERS+1][MAX_MESSAGE_LENGTH], MsgWasSent[128], MsgNotSent[128];
+char vkToken[128], ServerIp[64], HostName[256], dsToken[128], tgToken[128], sSection[256], sValueID[256], sText[MAXPLAYERS+1][MAX_MESSAGE_LENGTH];
+
 stock int onClickMenu(Menu menu, MenuAction action, int client, int params)
 {
 	switch (action) {
@@ -88,9 +89,7 @@ public void OnPluginStart()
 	KeyValues kv = new KeyValues("SocialManager");
 	
 	LoadTranslations("SocialManager.phrases");
-	Format(MsgWasSent, sizeof(MsgWasSent), "%t", "Messages.MsgWasSent");
-	Format(MsgNotSent, sizeof(MsgNotSent), "%t", "Messages.MsgNotSent");
-
+	
 	if (!FileExists(sPath, false)) {
 		if (kv.JumpToKey("Settings", true)) {
 			kv.SetString("vkToken", "yourvktoken");
@@ -307,6 +306,10 @@ stock void SendToVK(char[] chatId, char[] message, int client)
  */
 stock void onVkMessageSend(HTTPResponse response, any value)
 {
+	char MsgWasSent[128], MsgNotSent[128];
+	Format(MsgWasSent, sizeof(MsgWasSent), "%t", "Messages.MsgWasSent");
+	Format(MsgNotSent, sizeof(MsgNotSent), "%t", "Messages.MsgNotSent");
+
 	if (response.Data == null) {
 		LogError("[Vk] Error: Invalid JSON response");
 
@@ -392,6 +395,10 @@ stock void SendToDS(char[] chatId, char[] message, int client)
  */
 stock void onDsMessageSend(HTTPResponse response, any value)
 {
+	char MsgWasSent[128], MsgNotSent[128];
+	Format(MsgWasSent, sizeof(MsgWasSent), "%t", "Messages.MsgWasSent");
+	Format(MsgNotSent, sizeof(MsgNotSent), "%t", "Messages.MsgNotSent");
+
 	if (response.Status != HTTPStatus_OK && response.Status != HTTPStatus_NoContent) {
 		char jsonResponse[2048];
 		JSONObject data = view_as<JSONObject>(response.Data);
@@ -459,6 +466,10 @@ stock void SendToTG(char[] chatId, char[] message, int client)
  */
 stock void onTgMessageSend(HTTPResponse response, any value)
 {
+	char MsgWasSent[128], MsgNotSent[128];
+	Format(MsgWasSent, sizeof(MsgWasSent), "%t", "Messages.MsgWasSent");
+	Format(MsgNotSent, sizeof(MsgNotSent), "%t", "Messages.MsgNotSent");
+	
 	if (response.Status != HTTPStatus_OK) {
 		char jsonResponse[2048];
 		JSONObject data = view_as<JSONObject>(response.Data);
