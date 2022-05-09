@@ -1,0 +1,63 @@
+"Phrases"
+{
+
+	"Old_Delay"
+	{
+		"#format"	"{1:i}"
+		"ru"		"{green}[SCM] {red}Сообщение можно оправлять раз в {i} сек."
+		"en"		"{green}[SCM] {red}The message can be sent once in {i} sec."
+	}
+	
+	"Old_Usage"
+	{
+		"ru"	"{green}[SCM] {default}Использование: !scm {green}<message>"
+		"en"	"{green}[SCM] {default}Usage: !scm {green}<message>"
+	}
+
+	"Old_ChatIsGag"
+	{
+		"ru"	"{green}[SCM] {red}Вам запретили писать в чат!"
+		"en"	"{green}[SCM] {red}You have been banned from writing to the chat!"
+	}
+
+	"Old_NotWorking"
+	{
+		"ru"	"{green}[SCM] {red}Плагин временно не работает!"
+		"en"	"{green}[SCM] {red}The plugin is temporarily not working!"
+	}
+	
+	"Old_MsgNotSent"
+	{
+		"#format"	"{1:t}"
+		"ru"		"{green}[SCM] {red}{1}"
+		"en"		"{green}[SCM] {red}{1}"
+	}
+
+	"Old_MsgWasSent"
+	{
+		"#format"	"{1:t}"
+		"ru"		"{green}[SCM] {green}{1}"
+		"en"		"{green}[SCM] {green}{1}"
+	}
+
+	"Old_SayFrom_Telegram"
+	{
+		"#format"	"{1:s},{2:s}"
+		"ru"		"{green}[SCM]{teamcolor}[Телеграм] {default}{1}: {default}{2}"
+		"en"		"{green}[SCM]{teamcolor}[Telegram] {default}{1}: {default}{2}"
+	}
+
+	"Old_SayFrom_Discord"
+	{
+		"#format"	"{1:s},{2:s}"
+		"ru"		"{green}[SCM]{teamcolor}[Дискорд] {default}{1}: {default}{2}"
+		"en"		"{green}[SCM]{teamcolor}[Discord] {default}{1}: {default}{2}"
+	}
+
+	"Old_SayFrom_Vk"
+	{
+		"#format"	"{1:s},{2:s}"
+		"ru"		"{green}[SCM]{teamcolor}[ВК] {default}{1}: {default}{2}"
+		"en"		"{green}[SCM]{teamcolor}[VK] {default}{1}: {default}{2}"
+	}
+}

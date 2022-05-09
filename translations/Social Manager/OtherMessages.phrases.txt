@@ -1,0 +1,27 @@
+"Phrases"
+{
+	"Other_MenuTitle"
+	{
+		
+		"ru"	"Куда отправить?"
+		"en"	"Where to send?"
+	}
+
+	"Other_BadConfig"
+    {
+        "ru"	"Укажите в /configs/SocialManager.ini id чатов!"
+        "en"	"Specify the chat id in /configs/SocialManager.ini!"
+    }
+
+    "Other_MsgWasSent"
+    {
+        "ru"	"Сообщение успешно отправлено!"
+        "en"	"The message was sent successfully!"
+    }
+
+    "Other_MsgNotSent"
+    {
+        "ru"	"Сообщение не было отправлено!"
+        "en"	"The message was not sent!"
+    }
+}

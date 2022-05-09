@@ -33,7 +33,7 @@ public Plugin myinfo =
 Menu menuChats;
 ArrayList chatsArray;
 int messagesDelay = 5, chatsCount, isLogging, isPrintHostName, lastMessageTime[MAXPLAYERS+1] = 0;
-char vkToken[128], ServerIp[64], HostName[256], dsToken[128], tgToken[128], sSection[256], sValueID[256], sText[MAXPLAYERS+1][MAX_MESSAGE_LENGTH];
+char vkToken[128], ServerIp[64], HostName[256], dsToken[128], tgToken[128], sSection[256], sValueID[256], sText[MAXPLAYERS+1][MAX_MESSAGE_LENGTH], MsgWasSent[128], MsgNotSent[128];
 
 stock int onClickMenu(Menu menu, MenuAction action, int client, int params)
 {
@@ -43,8 +43,8 @@ stock int onClickMenu(Menu menu, MenuAction action, int client, int params)
 			menu.GetItem(params, chatId, sizeof(chatId), _, itemTitle, sizeof(itemTitle));
 
 			if ((lastMessageTime[client]+messagesDelay) >= GetTime() && !(GetUserFlagBits(client) & ADMFLAG_ROOT)) {
-				MC_PrintToChat(client, "%t", "ClientMod.Messages.Delay", messagesDelay);
-				C_PrintToChat(client, "%t", "Old.Messages.Delay", messagesDelay);
+				MC_PrintToChat(client, "%t", "CM_Delay", messagesDelay);
+				C_PrintToChat(client, "%t", "Old_Delay", messagesDelay);
 			} else {
 				if (strncmp(chatId, "vk_", 3, false) == 0) {
 					SendToVK(chatId[3], sText[client], client);
@@ -88,8 +88,13 @@ public void OnPluginStart()
 	BuildPath(Path_SM, sPath, sizeof(sPath), "configs/SocialManager.ini");
 	KeyValues kv = new KeyValues("SocialManager");
 	
-	LoadTranslations("SocialManager.phrases");
-	
+	LoadTranslations("Social Manager/OldMessages.phrases");
+	LoadTranslations("Social Manager/OtherMessages.phrases");
+	LoadTranslations("Social Manager/ClientModMessages.phrases");
+
+	Format(MsgWasSent, sizeof(MsgWasSent), "%t", "Other_MsgWasSent");
+	Format(MsgNotSent, sizeof(MsgNotSent), "%t", "Other_MsgNotSent");
+
 	if (!FileExists(sPath, false)) {
 		if (kv.JumpToKey("Settings", true)) {
 			kv.SetString("vkToken", "yourvktoken");
@@ -130,7 +135,7 @@ public void OnPluginStart()
 			kv.GotoFirstSubKey(false);
 			
 			menuChats = new Menu(onClickMenu);
-			menuChats.SetTitle("%t", "SayTo.MenuTitle");
+			menuChats.SetTitle("%t", "Other_MenuTitle");
 			chatsArray = new ArrayList(ByteCountToCells(128));
 
 			do {
@@ -173,8 +178,8 @@ public Action SayFromDS(int client, int args)
 
 		if(strlen(sBuffer[1]) < 1) return Plugin_Handled;
 
-		MC_PrintToChatAll("%t", "ClientMod.SayFrom.Discord", sBuffer[0], sBuffer[1]);
-		C_PrintToChatAll("%t", "Old.SayFrom.Discord", sBuffer[0], sBuffer[1]);
+		MC_PrintToChatAll("%t", "CM_SayFrom_Discord", sBuffer[0], sBuffer[1]);
+		C_PrintToChatAll("%t", "Old_SayFrom_Discord", sBuffer[0], sBuffer[1]);
 		ReplyToCommand(client, "[SCM][Discord] %s: %s", sBuffer[0], sBuffer[1]);
 	}
 	return Plugin_Continue;
@@ -191,8 +196,8 @@ public Action SayFromVK(int client, int args)
 
 		if(strlen(sBuffer[1]) < 1) return Plugin_Handled;
 
-		MC_PrintToChatAll("%t", "ClientMod.SayFrom.Vk", sBuffer[0], sBuffer[1]);
-		C_PrintToChatAll("%t", "Old.SayFrom.Vk", sBuffer[0], sBuffer[1]);
+		MC_PrintToChatAll("%t", "CM_SayFrom_Vk", sBuffer[0], sBuffer[1]);
+		C_PrintToChatAll("%t", "Old_SayFrom_Vk", sBuffer[0], sBuffer[1]);
 		ReplyToCommand(client, "[SCM][Vk] %s: %s", sBuffer[0], sBuffer[1]);
 	}
 	return Plugin_Continue;
@@ -209,8 +214,8 @@ public Action SayFromTG(int client, int args)
 
 		if(strlen(sBuffer[1]) < 1) return Plugin_Handled;
 
-		MC_PrintToChatAll("%t", "ClientMod.SayFrom.Telegram", sBuffer[0], sBuffer[1]);
-		C_PrintToChatAll("%t", "Old.SayFrom.Telegram", sBuffer[0], sBuffer[1]);
+		MC_PrintToChatAll("%t", "CM_SayFrom_Telegram", sBuffer[0], sBuffer[1]);
+		C_PrintToChatAll("%t", "Old_SayFrom_Telegram", sBuffer[0], sBuffer[1]);
 		ReplyToCommand(client, "[SCM][Telegram] %s: %s", sBuffer[0], sBuffer[1]);
 	}
 	return Plugin_Continue;
@@ -220,15 +225,15 @@ public Action SayTo(int client, int args)
 {
 	if (client != 0 && IsClientInGame(client) && !IsFakeClient(client)) {
 		if (chatsCount < 1) {
-			MC_PrintToChat(client, "%t", "ClientMod.Messages.NotWorking");
-			C_PrintToChat(client, "%t", "Old.Messages.NotWorking");
+			MC_PrintToChat(client, "%t", "CM_NotWorking");
+			C_PrintToChat(client, "%t", "Old_NotWorking");
 			LogError("%t", "Messages.BadConfig");
 		} else if (client > 0 && args < 1) {
-			MC_PrintToChat(client, "%t", "ClientMod.Messages.Usage");
-			C_PrintToChat(client, "%t", "Old.Messages.Usage");
+			MC_PrintToChat(client, "%t", "CM_Usage");
+			C_PrintToChat(client, "%t", "Old_Usage");
 		} else if (BaseComm_IsClientGagged(client)) {
-			MC_PrintToChat(client, "%t", "ClientMod.Messages.ChatIsGag");
-			C_PrintToChat(client, "%t", "Old.Messages.ChatIsGag");
+			MC_PrintToChat(client, "%t", "CM_ChatIsGag");
+			C_PrintToChat(client, "%t", "Old_ChatIsGag");
 		} else {
 			char playerName[MAX_NAME_LENGTH];
 			GetClientName(client, playerName, sizeof(playerName));
@@ -306,18 +311,14 @@ stock void SendToVK(char[] chatId, char[] message, int client)
  */
 stock void onVkMessageSend(HTTPResponse response, any value)
 {
-	char MsgWasSent[128], MsgNotSent[128];
-	Format(MsgWasSent, sizeof(MsgWasSent), "%t", "Messages.MsgWasSent");
-	Format(MsgNotSent, sizeof(MsgNotSent), "%t", "Messages.MsgNotSent");
-
 	if (response.Data == null) {
 		LogError("[Vk] Error: Invalid JSON response");
 
 		if (value == 0) {
 			ReplyToCommand(value, "[SCM][Vk] %t", "Messages.MsgWasSent");
 		} else {
-			C_PrintToChat(value, "%t", "Old.Messages.MsgNotSent", MsgNotSent);
-			MC_PrintToChat(value, "%t", "ClientMod.Messages.MsgNotSent", MsgNotSent);
+			C_PrintToChat(value, "%t", "Old_MsgNotSent", MsgNotSent);
+			MC_PrintToChat(value, "%t", "CM_MsgNotSent", MsgNotSent);
 		}
 		return;
 	}
@@ -328,8 +329,8 @@ stock void onVkMessageSend(HTTPResponse response, any value)
 		if (value == 0) {
 			ReplyToCommand(value, "[SCM][Vk] %t", "Messages.MsgWasSent");
 		} else {
-			C_PrintToChat(value, "%t", "Old.Messages.MsgNotSent", MsgNotSent);
-			MC_PrintToChat(value, "%t", "ClientMod.Messages.MsgNotSent", MsgNotSent);
+			C_PrintToChat(value, "%t", "Old_MsgNotSent", MsgNotSent);
+			MC_PrintToChat(value, "%t", "CM_MsgNotSent", MsgNotSent);
 		}
 		return;
 	}
@@ -349,8 +350,8 @@ stock void onVkMessageSend(HTTPResponse response, any value)
 		if (value == 0) {
 			ReplyToCommand(value, "[SCM][Vk] Error: %s", errorMessage);
 		} else {
-			C_PrintToChat(value,  "%t", "Old.Messages.MsgNotSent", MsgNotSent);
-			MC_PrintToChat(value, "%t", "ClientMod.Messages.MsgNotSent", MsgNotSent);
+			C_PrintToChat(value,  "%t", "Old_MsgNotSent", MsgNotSent);
+			MC_PrintToChat(value, "%t", "CM_MsgNotSent", MsgNotSent);
 		}
 		return;
 	}
@@ -359,8 +360,8 @@ stock void onVkMessageSend(HTTPResponse response, any value)
 		ReplyToCommand(value, "[SCM][VK] %s", MsgWasSent);
 	} else {
 		lastMessageTime[value] = GetTime();
-		C_PrintToChat(value, "%t", "Old.Messages.MsgWasSent", MsgWasSent);
-		MC_PrintToChat(value, "%t", "ClientMod.Messages.MsgWasSent", MsgWasSent);
+		C_PrintToChat(value, "%t", "Old_MsgWasSent", MsgWasSent);
+		MC_PrintToChat(value, "%t", "CM_MsgWasSent", MsgWasSent);
 	}
 }
 
@@ -395,10 +396,6 @@ stock void SendToDS(char[] chatId, char[] message, int client)
  */
 stock void onDsMessageSend(HTTPResponse response, any value)
 {
-	char MsgWasSent[128], MsgNotSent[128];
-	Format(MsgWasSent, sizeof(MsgWasSent), "%t", "Messages.MsgWasSent");
-	Format(MsgNotSent, sizeof(MsgNotSent), "%t", "Messages.MsgNotSent");
-
 	if (response.Status != HTTPStatus_OK && response.Status != HTTPStatus_NoContent) {
 		char jsonResponse[2048];
 		JSONObject data = view_as<JSONObject>(response.Data);
@@ -417,8 +414,8 @@ stock void onDsMessageSend(HTTPResponse response, any value)
 		if (value == 0) {
 			ReplyToCommand(value, "[SCM][Discord] %t", "Messages.MsgNotSent");
 		} else {
-			C_PrintToChat(value,  "%t", "Old.Messages.MsgNotSent", MsgNotSent);
-			MC_PrintToChat(value, "%t", "ClientMod.Messages.MsgNotSent", MsgNotSent);
+			C_PrintToChat(value,  "%t", "Old_MsgNotSent", MsgNotSent);
+			MC_PrintToChat(value, "%t", "CM_MsgNotSent", MsgNotSent);
 		}
 		return;
 	} else {
@@ -426,8 +423,8 @@ stock void onDsMessageSend(HTTPResponse response, any value)
 			ReplyToCommand(value, "[SCM][Discord] %s", MsgWasSent);
 		} else {
 			lastMessageTime[value] = GetTime();
-			C_PrintToChat(value,  "%t", "Old.Messages.MsgWasSent", MsgWasSent);
-			MC_PrintToChat(value, "%t", "ClientMod.Messages.MsgWasSent", MsgWasSent);
+			C_PrintToChat(value,  "%t", "Old_MsgWasSent", MsgWasSent);
+			MC_PrintToChat(value, "%t", "CM_MsgWasSent", MsgWasSent);
 		}
 	}
 }
@@ -466,10 +463,6 @@ stock void SendToTG(char[] chatId, char[] message, int client)
  */
 stock void onTgMessageSend(HTTPResponse response, any value)
 {
-	char MsgWasSent[128], MsgNotSent[128];
-	Format(MsgWasSent, sizeof(MsgWasSent), "%t", "Messages.MsgWasSent");
-	Format(MsgNotSent, sizeof(MsgNotSent), "%t", "Messages.MsgNotSent");
-	
 	if (response.Status != HTTPStatus_OK) {
 		char jsonResponse[2048];
 		JSONObject data = view_as<JSONObject>(response.Data);
@@ -488,8 +481,8 @@ stock void onTgMessageSend(HTTPResponse response, any value)
 		if (value == 0) {
 			ReplyToCommand(value, "[SCM][Telegram] %t", "Messages.MsgNotSent");
 		} else {
-			C_PrintToChat(value,  "%t", "Old.Messages.MsgNotSent", MsgNotSent);
-			MC_PrintToChat(value, "%t", "ClientMod.Messages.MsgNotSent", MsgNotSent);
+			C_PrintToChat(value,  "%t", "Old_MsgNotSent", MsgNotSent);
+			MC_PrintToChat(value, "%t", "CM_MsgNotSent", MsgNotSent);
 		}
 		return;
 	}
@@ -500,8 +493,8 @@ stock void onTgMessageSend(HTTPResponse response, any value)
 		if (value == 0) {
 			ReplyToCommand(value, "[SCM][Telegram] %t", "Messages.MsgNotSent");
 		} else {
-			C_PrintToChat(value,  "%t", "Old.Messages.MsgNotSent", MsgNotSent);
-			MC_PrintToChat(value, "%t", "ClientMod.Messages.MsgNotSent", MsgNotSent);
+			C_PrintToChat(value,  "%t", "Old_MsgNotSent", MsgNotSent);
+			MC_PrintToChat(value, "%t", "CM_MsgNotSent", MsgNotSent);
 		}
 		return;
 	}
@@ -510,7 +503,7 @@ stock void onTgMessageSend(HTTPResponse response, any value)
 		ReplyToCommand(value, "[SCM][Telegram] %s", MsgWasSent);
 	} else {
 		lastMessageTime[value] = GetTime();
-		C_PrintToChat(value,  "%t", "Old.Messages.MsgWasSent", MsgWasSent);
-		MC_PrintToChat(value, "%t", "ClientMod.Messages.MsgWasSent", MsgWasSent);
+		C_PrintToChat(value,  "%t", "Old_MsgWasSent", MsgWasSent);
+		MC_PrintToChat(value, "%t", "CM_MsgWasSent", MsgWasSent);
 	}
 }
