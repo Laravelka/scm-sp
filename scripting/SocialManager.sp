@@ -137,7 +137,7 @@ public void OnPluginStart()
 			menuChats = new Menu(onClickMenu);
 			menuChats.SetTitle("%t", "Other_MenuTitle");
 			chatsArray = new ArrayList(ByteCountToCells(128));
-			
+
 			do {
 				kv.GetSectionName(sSection, sizeof(sSection));
 				kv.GetString(NULL_STRING, sValueID, sizeof(sValueID));
@@ -227,7 +227,7 @@ public Action SayTo(int client, int args)
 		if (chatsCount < 1) {
 			MC_PrintToChat(client, "%t", "CM_NotWorking");
 			C_PrintToChat(client, "%t", "Old_NotWorking");
-			LogError("%t", "Messages.BadConfig");
+			LogError("%t", "Other_BadConfig");
 		} else if (client > 0 && args < 1) {
 			MC_PrintToChat(client, "%t", "CM_Usage");
 			C_PrintToChat(client, "%t", "Old_Usage");
@@ -251,7 +251,7 @@ public Action SayTo(int client, int args)
 		}
 	} else {
 		if (chatsCount < 1) {
-			LogError("%t", "Messages.BadConfig");
+			LogError("%t", "Other_BadConfig");
 		} else {
 			GetCmdArgString(sText[client], sizeof(sText[]));
 			
