@@ -1,12 +1,11 @@
 "Phrases"
 {
-
 	"Old_Delay"
 	{
 		"#format"	"{1:i}"
 		
-		"ru"		"{green}[SCM] {red}Сообщение можно оправлять раз в {i} сек."
-		"en"		"{green}[SCM] {red}The message can be sent once in {i} sec."
+		"ru"		"{green}[SCM] {red}Сообщение можно оправлять раз в {1} сек."
+		"en"		"{green}[SCM] {red}The message can be sent once in {1} sec."
 	}
 	
 	"Old_Usage"

@@ -15,7 +15,7 @@
 #include <basecomm>
 
 #define RIP_ON()		(CanTestFeatures() && GetFeatureStatus(FeatureType_Native, "HTTPRequest.HTTPRequest")			== FeatureStatus_Available)
-#define PLUGIN_VERSION "1.5.0"
+#define PLUGIN_VERSION "1.5.1"
 #define VK_API_VERSION "5.131"
 
 #pragma semicolon 1
@@ -71,10 +71,10 @@ public void OnPluginStart()
 	 * Убирает "[В ожидании: ]" из названия сервера
 	 */
 	char splitactiv[12][256];
-	if (ExplodeString(HostName, " [В", splitactiv, 12, sizeof(HostName)) > 1)
-	{
+	if (ExplodeString(HostName, " [В", splitactiv, 12, sizeof(HostName)) > 1) {
 		Format(HostName, sizeof(HostName), "%s", splitactiv[0]);
 	}
+	
 	CreateConVar("scm_version", PLUGIN_VERSION, "[SM] Social Manager plugin version", FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_CHEAT|FCVAR_DONTRECORD);
 	
 	RegConsoleCmd("scm_vk", SayFromVK, "send message from VK");
@@ -198,7 +198,7 @@ public Action SayFromVK(int client, int args)
 
 		MC_PrintToChatAll("%t", "CM_SayFrom_Vk", sBuffer[0], sBuffer[1]);
 		C_PrintToChatAll("%t", "Old_SayFrom_Vk", sBuffer[0], sBuffer[1]);
-		ReplyToCommand(client, "[SCM][Vk] %s: %s", sBuffer[0], sBuffer[1]);
+		ReplyToCommand(client, "[SCM][VK] %s: %s", sBuffer[0], sBuffer[1]);
 	}
 	return Plugin_Continue;
 }
@@ -312,10 +312,10 @@ stock void SendToVK(char[] chatId, char[] message, int client)
 stock void onVkMessageSend(HTTPResponse response, any value)
 {
 	if (response.Data == null) {
-		LogError("[Vk] Error: Invalid JSON response");
+		LogError("[VK] Error: Invalid JSON response");
 
 		if (value == 0) {
-			ReplyToCommand(value, "[SCM][Vk] %t", "Other_MsgNotSent");
+			ReplyToCommand(value, "[SCM][VK] %t", "Other_MsgNotSent");
 		} else {
 			C_PrintToChat(value, "%t", "Old_MsgNotSent", "Other_MsgNotSent");
 			MC_PrintToChat(value, "%t", "CM_MsgNotSent", "Other_MsgNotSent");
@@ -324,10 +324,10 @@ stock void onVkMessageSend(HTTPResponse response, any value)
 	}
 
 	if (response.Status != HTTPStatus_OK) {
-		LogError("[Vk] Invalid status response");
+		LogError("[VK] Invalid status response");
 
 		if (value == 0) {
-			ReplyToCommand(value, "[SCM][Vk] %t", "Other_MsgNotSent");
+			ReplyToCommand(value, "[SCM][VK] %t", "Other_MsgNotSent");
 		} else {
 			C_PrintToChat(value, "%t", "Old_MsgNotSent", "Other_MsgNotSent");
 			MC_PrintToChat(value, "%t", "CM_MsgNotSent", "Other_MsgNotSent");
@@ -344,11 +344,11 @@ stock void onVkMessageSend(HTTPResponse response, any value)
 		if (isLogging) {
 			char jsonResponse[1024];
 			data.ToString(jsonResponse, sizeof jsonResponse);
-			LogError("[Vk] jsonResponse: %s", jsonResponse);
+			LogError("[VK] jsonResponse: %s", jsonResponse);
 		}
 		
 		if (value == 0) {
-			ReplyToCommand(value, "[SCM][Vk] Error: %s", errorMessage);
+			ReplyToCommand(value, "[SCM][VK] Error: %s", errorMessage);
 		} else {
 			C_PrintToChat(value,  "%t", "Old_MsgNotSent", "Other_MsgNotSent");
 			MC_PrintToChat(value, "%t", "CM_MsgNotSent", "Other_MsgNotSent");

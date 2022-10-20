@@ -4,8 +4,8 @@
 	{
 		"#format"	"{1:i}"
 
-		"ru"		"{rare}[SCM] {red}Сообщение можно оправлять раз в {i} сек."
-		"en"		"{rare}[SCM] {red}The message can be sent once in {i} sec."
+		"ru"		"{rare}[SCM] {red}Сообщение можно оправлять раз в {1} сек."
+		"en"		"{rare}[SCM] {red}The message can be sent once in {1} sec."
 	}
 	
 	"CM_Usage"
