@@ -35,7 +35,7 @@ ArrayList chatsArray;
 int messagesDelay = 5, chatsCount, isLogging, isPrintHostName, lastMessageTime[MAXPLAYERS+1] = 0;
 char vkToken[128], ServerIp[64], HostName[256], dsToken[128], tgToken[128], sSection[256], sValueID[256], sText[MAXPLAYERS+1][MAX_MESSAGE_LENGTH], MsgWasSent[128], MsgNotSent[128];
 
-stock int onClickMenu(Menu menu, MenuAction action, int client, int params)
+public int onClickMenu(Menu menu, MenuAction action, int client, int params)
 {
 	switch (action) {
 		case MenuAction_Select:{
@@ -154,23 +154,9 @@ public void OnPluginStart()
 	delete kv;
 }
 
-public APLRes AskPluginLoad2(Handle hMySelf, bool bLate, char[] szError, int iErr_max)
-{
-	#if defined _ripext_included_
-		MarkNativeAsOptional("HTTPRequest.HTTPRequest");
-		MarkNativeAsOptional("HTTPRequest.SetHeader");
-		MarkNativeAsOptional("HTTPRequest.Get");
-		MarkNativeAsOptional("HTTPRequest.Post");
-		MarkNativeAsOptional("HTTPRequest.AppendFormParam");
-		MarkNativeAsOptional("HTTPResponse.Status.get");
-	#endif
-		return APLRes_Success;
-}
-
 public Action SayFromDS(int client, int args)
 {
-	if(client == 0 && args > 0)
-	{
+	if(client == 0 && args > 0) {
 		char sDS[512], sBuffer[2][512];
 		GetCmdArgString(sDS, sizeof(sDS));
 		ReplaceString(sDS, sizeof(sDS), "\"", "", false);
@@ -182,13 +168,13 @@ public Action SayFromDS(int client, int args)
 		C_PrintToChatAll("%t", "Old_SayFrom_Discord", sBuffer[0], sBuffer[1]);
 		ReplyToCommand(client, "[SCM][Discord] %s: %s", sBuffer[0], sBuffer[1]);
 	}
+
 	return Plugin_Continue;
 }
 
 public Action SayFromVK(int client, int args)
 {
-	if(client == 0 && args > 0)
-	{
+	if(client == 0 && args > 0) {
 		char sVK[512], sBuffer[2][512];
 		GetCmdArgString(sVK, sizeof(sVK));
 		ReplaceString(sVK, sizeof(sVK), "\"", "", false);
@@ -200,13 +186,13 @@ public Action SayFromVK(int client, int args)
 		C_PrintToChatAll("%t", "Old_SayFrom_Vk", sBuffer[0], sBuffer[1]);
 		ReplyToCommand(client, "[SCM][VK] %s: %s", sBuffer[0], sBuffer[1]);
 	}
+
 	return Plugin_Continue;
 }
 
 public Action SayFromTG(int client, int args)
 {
-	if(client == 0 && args > 0)
-	{
+	if(client == 0 && args > 0) {
 		char sTG[512], sBuffer[2][512];
 		GetCmdArgString(sTG, sizeof(sTG));
 		ReplaceString(sTG, sizeof(sTG), "\"", "", false);
@@ -218,6 +204,7 @@ public Action SayFromTG(int client, int args)
 		C_PrintToChatAll("%t", "Old_SayFrom_Telegram", sBuffer[0], sBuffer[1]);
 		ReplyToCommand(client, "[SCM][Telegram] %s: %s", sBuffer[0], sBuffer[1]);
 	}
+
 	return Plugin_Continue;
 }
 
@@ -274,6 +261,7 @@ public Action SayTo(int client, int args)
 			}
 		}
 	}
+
 	return Plugin_Continue;
 }
 
@@ -286,7 +274,7 @@ public Action SayTo(int client, int args)
  * @return void
  *
  */
-stock void SendToVK(char[] chatId, char[] message, int client)
+void SendToVK(char[] chatId, char[] message, int client)
 {
 	HTTPRequest httpRequest = new HTTPRequest("https://api.vk.com/method/messages.send");
 	httpRequest.SetHeader("User-Agent", "SM SocialManager plugin");
@@ -298,27 +286,29 @@ stock void SendToVK(char[] chatId, char[] message, int client)
 	httpRequest.AppendFormParam("random_id", "%d", randomId);
 	httpRequest.AppendFormParam("access_token", "%s", vkToken);
 
-	httpRequest.PostForm(onVkMessageSend, client);
+	httpRequest.PostForm(onVkMessageSend, GetClientUserId(client));
 }
 
 /**
  * SendToVK POST callback
  *
  * @param  HTTPResponse response
- * @param  any value
+ * @param  int userId
  * @return void
  *
  */
-stock void onVkMessageSend(HTTPResponse response, any value)
+public void onVkMessageSend(HTTPResponse response, int userId)
 {
+	const int client = GetClientOfUserId(userId);
+
 	if (response.Data == null) {
 		LogError("[VK] Error: Invalid JSON response");
 
-		if (value == 0) {
-			ReplyToCommand(value, "[SCM][VK] %t", "Other_MsgNotSent");
+		if (!client) {
+			ReplyToCommand(client, "[SCM][VK] %t", "Other_MsgNotSent");
 		} else {
-			C_PrintToChat(value, "%t", "Old_MsgNotSent", "Other_MsgNotSent");
-			MC_PrintToChat(value, "%t", "CM_MsgNotSent", "Other_MsgNotSent");
+			C_PrintToChat(client, "%t", "Old_MsgNotSent", "Other_MsgNotSent");
+			MC_PrintToChat(client, "%t", "CM_MsgNotSent", "Other_MsgNotSent");
 		}
 		return;
 	}
@@ -326,14 +316,15 @@ stock void onVkMessageSend(HTTPResponse response, any value)
 	if (response.Status != HTTPStatus_OK) {
 		LogError("[VK] Invalid status response");
 
-		if (value == 0) {
-			ReplyToCommand(value, "[SCM][VK] %t", "Other_MsgNotSent");
+		if (!client) {
+			ReplyToCommand(client, "[SCM][VK] %t", "Other_MsgNotSent");
 		} else {
-			C_PrintToChat(value, "%t", "Old_MsgNotSent", "Other_MsgNotSent");
-			MC_PrintToChat(value, "%t", "CM_MsgNotSent", "Other_MsgNotSent");
+			C_PrintToChat(client, "%t", "Old_MsgNotSent", "Other_MsgNotSent");
+			MC_PrintToChat(client, "%t", "CM_MsgNotSent", "Other_MsgNotSent");
 		}
 		return;
 	}
+
 	JSONObject data = view_as<JSONObject>(response.Data);
 
 	if (data.HasKey("error")) {
@@ -347,23 +338,35 @@ stock void onVkMessageSend(HTTPResponse response, any value)
 			LogError("[VK] jsonResponse: %s", jsonResponse);
 		}
 		
-		if (value == 0) {
-			ReplyToCommand(value, "[SCM][VK] Error: %s", errorMessage);
+		if (!client) {
+			ReplyToCommand(client, "[SCM][VK] Error: %s", errorMessage);
 		} else {
-			C_PrintToChat(value,  "%t", "Old_MsgNotSent", "Other_MsgNotSent");
-			MC_PrintToChat(value, "%t", "CM_MsgNotSent", "Other_MsgNotSent");
+			C_PrintToChat(client,  "%t", "Old_MsgNotSent", "Other_MsgNotSent");
+			MC_PrintToChat(client, "%t", "CM_MsgNotSent", "Other_MsgNotSent");
 		}
+
+		data.Close();
+		error.Close();
+
 		return;
 	}
 
-	if (value == 0) {
-		ReplyToCommand(value, "[SCM][VK] %s", MsgWasSent);
+	data.Close();
+
+	if (!client) {
+		ReplyToCommand(client, "[SCM][VK] %s", MsgWasSent);
 	} else {
-		lastMessageTime[value] = GetTime();
-		C_PrintToChat(value, "%t", "Old_MsgWasSent", "Other_MsgWasSent");
-		MC_PrintToChat(value, "%t", "CM_MsgWasSent", "Other_MsgWasSent");
+		lastMessageTime[client] = GetTime();
+		C_PrintToChat(client, "%t", "Old_MsgWasSent", "Other_MsgWasSent");
+		MC_PrintToChat(client, "%t", "CM_MsgWasSent", "Other_MsgWasSent");
 	}
 }
+
+/*
+
+Думаю логика понятна по коду, что выше
+
+*/
 
 /**
  * send message to discord
